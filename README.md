@@ -15,20 +15,17 @@
 
 Both videos were generated on the exact same **NVIDIA GeForce RTX 4090 (24GB)**, using the exact same prompt, character reference image, seed (`981445682258077`), and resolution (**1344×768, 5.16s @ 24 fps / 124 frames**).
 
-<p align="center">
-  <img src="assets/example_character.jpg" width="220" style="border-radius: 8px;" alt="Input Reference Character">
-  <br>
-  <b>Input Character Reference Image</b>
-</p>
-
 <table>
   <thead>
     <tr align="center">
-      <th width="50%">
+      <th width="18%">
+        <h3>🖼️ Input Character</h3>
+      </th>
+      <th width="41%">
         <h3>🚀 Ref2VA VSA (Ours - 4 Steps)</h3>
         <b>⏱️ 95s (1st run) / ~72s (warm)</b>
       </th>
-      <th width="50%">
+      <th width="41%">
         <h3>🔬 Video Delta Net / VDN-H3 (8 Steps)</h3>
         <b>⏱️ 213s (1st run) / ~135s (warm)</b>
       </th>
@@ -36,19 +33,18 @@ Both videos were generated on the exact same **NVIDIA GeForce RTX 4090 (24GB)**,
   </thead>
   <tbody>
     <tr>
-      <td align="center">
-        <img src="assets/vsa_ref2va_preview.webp" width="100%" alt="Ref2VA VSA Preview">
-        <br>
-        <a href="assets/vsa_ref2va_4step_95s.mp4"><b>▶ Download Full 1344x768 Video (MP4)</b></a>
+      <td align="center" valign="top">
+        <img src="assets/example_character.jpg" width="100%" style="border-radius: 8px;" alt="Input Reference Character">
+        <br><br>
+        <b>Input Character Reference Image</b>
       </td>
-      <td align="center">
-        <img src="assets/vdn_ref2va_preview.webp" width="100%" alt="VDN-H3 Preview">
+      <td valign="top">
+        <div align="center">
+          <img src="assets/vsa_ref2va_preview.webp" width="100%" alt="Ref2VA VSA Preview">
+          <br>
+          <a href="assets/vsa_ref2va_4step_95s.mp4"><b>▶ Download Full 1344x768 Video (MP4)</b></a>
+        </div>
         <br>
-        <a href="assets/vdn_ref2va_8step_213s.mp4"><b>▶ Download Full 1344x768 Video (MP4)</b></a>
-      </td>
-    </tr>
-    <tr>
-      <td>
         <ul>
           <li><b>Sampling:</b> 4 steps (<code>euler</code> / <code>simple</code>)</li>
           <li><b>Attention:</b> 75% video sparsity top-k (sparse DiT)</li>
@@ -56,7 +52,13 @@ Both videos were generated on the exact same **NVIDIA GeForce RTX 4090 (24GB)**,
           <li><b>Peak VRAM:</b> ~13.5 GB</li>
         </ul>
       </td>
-      <td>
+      <td valign="top">
+        <div align="center">
+          <img src="assets/vdn_ref2va_preview.webp" width="100%" alt="VDN-H3 Preview">
+          <br>
+          <a href="assets/vdn_ref2va_8step_213s.mp4"><b>▶ Download Full 1344x768 Video (MP4)</b></a>
+        </div>
+        <br>
         <ul>
           <li><b>Sampling:</b> 8 steps (<code>er_sde</code> / <code>beta</code>)</li>
           <li><b>Attention:</b> Hybrid (windowed dense + linear delta state)</li>
@@ -125,61 +127,4 @@ Place the following files in your `ComfyUI/models/` directories:
 1. Clone or copy this repository into your ComfyUI `custom_nodes` directory:
    ```bash
    cd ComfyUI/custom_nodes
-   git clone https://github.com/Kablex/ComfyUI-Ref2VA-VSA
-   ```
-
-2. Copy the example character image into your ComfyUI input folder:
-   ```bash
-   cp ComfyUI-Ref2VA-VSA/assets/example_character.jpg ComfyUI/input/
-   ```
-
-3. Restart ComfyUI. The node appears under:
-   `FastH3/VSA -> Ref2VA VSA Gate Transplant (EXPERIMENTAL)`
-
-4. Load the ready-to-use workflow from `workflows/ref2va_vsa_4step_rtx4090.json` and click **Queue Prompt**.
-
----
-
-## 🛠️ Node Wiring
-
-```
-[UNETLoader (Ref2VA INT8)]
-        │
-        ▼
-[LoraLoaderModelOnly (Turbo 4-Step LoRA, strength=1.0)]
-        │
-        ▼
-[Ref2VAVSAGatePatch (fasth3_vsa_gate.safetensors, sparsity=0.75)]
-        │
-        ▼
-[MiniMaxH3SigmaShift (shift_video=12, shift_audio=3)]
-        │
-        ├──► [BasicScheduler (steps=4, scheduler=simple)]
-        │
-        └──► [BasicGuider] ──► [SamplerCustomAdvanced (sampler=euler)]
-```
-
----
-
-## 🧰 Extracting the Gate File (`tools/extract_vsa_gate.py`)
-
-If you have a FastH3 VSA base checkpoint (`minimax_h3_fastvideo_vsa_datafree_1300step_4step_int8_convrot.safetensors`), you can extract `fasth3_vsa_gate.safetensors` yourself:
-
-```bash
-python tools/extract_vsa_gate.py \
-    --input /path/to/minimax_h3_fastvideo_vsa_datafree_1300step_4step_int8_convrot.safetensors \
-    --output /path/to/ComfyUI/models/loras/fasth3_vsa_gate.safetensors
-```
-
----
-
-## 📄 License & Acknowledgements
-
-- Licensed under the [Apache License 2.0](LICENSE).
-- Special thanks to the **FastVideo** team for the VSA-H3 attention concept and to the **ComfyUI** / **comfy-kitchen** developers for the CUDA Sol-Attention kernel primitives.
-
----
-
-## 🛠️ Professional help
-
-Need this tuned for your own pipeline, GPU or model? We do speed and VRAM audits for ComfyUI image and video workflows, measured before and after. hello@grawwww.xyz
+   git clone [https://github.com/Kablex/ComfyUI-Ref2VA-VSA](https://github.com/Kablex/ComfyUI-Ref2VA-VSA)
